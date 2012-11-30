@@ -9,15 +9,15 @@ class DbSession extends DatabaseSession implements CakeSessionHandlerInterface {
 	public function __construct() {
 		parent::__construct();
 		$config = $this->_configure();
-		$this->UserSession = ClassRegistry::init(array(
-			'table' => 'cake_user_sessions',
-			'class' => 'UserSession',
-			'ds' => $config['datasource'],
-		));
+		$this->UserSession = ClassRegistry::init('DbSession.UserSession');
+		if (!empty($config['datasource'])) {
+			$this->UserSession->setDataSource($config['datasource']);
+		}
 	}
 
 	protected function _configure() {
-		$config = array_merge(array(
+		$config = Hash::merge(array(
+			'timeout' => 600,
 			'datasource' => 'default',
 			), Configure::read('Session')
 		);
@@ -70,7 +70,7 @@ class DbSession extends DatabaseSession implements CakeSessionHandlerInterface {
 			'cake_session_id' => $id,
 		));
 		return $this->UserSession->save();
-    }
+	}
 
 	protected function _removeUserMap($id) {
 		$this->UserSession->deleteAll(array(

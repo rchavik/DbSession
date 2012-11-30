@@ -3,4 +3,3 @@
 class DbSessionAppModel extends AppModel {
 
 }
-
